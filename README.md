@@ -12,25 +12,24 @@ A portfolio-grade self-service password reset portal inspired by IAM practices. 
 
 - Email-based login initiation with enumeration-safe responses
 - Push-style approval simulation with automatic email OTP fallback
+- OTP verification with expiration and retry protection
 - Short-lived reset tokens with JWT validation
-- Audit logging for security-critical events
-- Modular TypeScript backend and componentized React UI
+- 3-minute flow timeout for authentication and password reset steps
+- Audit logging for all security-critical events
+- Secure password hashing and token handling
+- Modular TypeScript backend and component-based React UI
+- Multi-language support (EN/TR)
 
 ## Architecture Diagram
 
-![Architecture Diagram](./docs/diagram.png)
+![Architecture](./docs/diagram.png)
 
 ## Screenshots
 
-<p align="center">
-  <img src="./docs/ss1.png" width="400"/>
-  <img src="./docs/ss2.png" width="400"/>
-</p>
-
-<p align="center">
-  <img src="./docs/ss3.png" width="400"/>
-  <img src="./docs/ss4.png" width="400"/>
-</p>
+![Screenshot 1](./docs/ss1.png)
+![Screenshot 2](./docs/ss2.png)
+![Screenshot 3](./docs/ss3.png)
+![Screenshot 4](./docs/ss4.png)
 
 ## Technologies Used
 
@@ -38,43 +37,34 @@ A portfolio-grade self-service password reset portal inspired by IAM practices. 
 - Node.js + Express + TypeScript
 - MongoDB + Mongoose
 - JWT (jsonwebtoken)
-- bcrypt
-- Nodemailer
-- Docker Compose (local demo)
+- bcrypt (password hashing)
+- crypto (secure token/OTP generation)
+- Nodemailer (email service)
+- Docker Compose (local environment)
+- i18n (multi-language support)
 
 ## Installation
 
-```bash
 cd server
 npm install
 
 cd ../client
 npm install
-```
 
 ## Running the Project
 
 Backend:
-
-```bash
 cd server
 npm run dev
-```
 
 Frontend:
-
-```bash
 cd client
 npm run dev
-```
 
 Docker (full stack):
-
-```bash
 docker compose up --build
-```
 
-Default ports:
+## Default Ports
 
 - Frontend: http://localhost:5173
 - Backend: http://localhost:4000
@@ -82,9 +72,8 @@ Default ports:
 
 ## Environment Variables
 
-Create `server/.env` with the following:
+Create server/.env:
 
-```bash
 NODE_ENV=development
 PORT=4000
 MONGODB_URI=mongodb://localhost:27017/sspr
@@ -95,78 +84,33 @@ SMTP_HOST=
 SMTP_PORT=587
 SMTP_USER=
 SMTP_PASS=
-SMTP_FROM=no-reply@example.com
-```
+SMTP_FROM=[no-reply@example.com](mailto:no-reply@example.com)
 
 ## Authentication Flow
 
-- Email login: user submits email to start the reset flow.
-- OTP verification: after push approval timeout, the system sends an email OTP and requires verification.
-- Timeout (3 minutes): the auth flow expires after 180 seconds by default (configurable via `FLOW_TIMEOUT_SECONDS`).
-- Password reset/change: once OTP is verified, the user sets a new password; the server validates and stores it hashed.
-- Token safety: reset tokens are issued server-side and must not be rendered or exposed in the frontend UI.
+1. Email login: user initiates reset with email
+2. Push simulation: system attempts approval
+3. OTP fallback: if push times out, email OTP is sent
+4. OTP verification: user verifies within expiration time
+5. Timeout control: flow expires after 3 minutes
+6. Password reset: user sets new password
+7. Token security: tokens are generated server-side and never exposed
 
 ## Security Notes
 
-- Passwords are stored as bcrypt hashes.
-- OTPs are hashed and expire after 5 minutes; resend is rate-limited.
-- Reset tokens are short-lived JWTs.
-- Audit logs capture security-critical events for traceability.
+- Passwords are hashed using bcrypt
+- OTPs are securely generated and hashed
+- Tokens are signed using JWT and short-lived
+- Sensitive data is never exposed to frontend
+- Timeout prevents session abuse
+- Rate limiting prevents brute-force attempts
+- Audit logs track all authentication actions
 
-## Folder Structure
+## Test User
 
-```text
-.
-├─ client
-│  ├─ src
-│  │  ├─ components
-│  │  ├─ hooks
-│  │  ├─ i18n
-│  │  ├─ pages
-│  │  ├─ services
-│  │  ├─ styles
-│  │  ├─ types
-│  │  ├─ utils
-│  │  ├─ App.tsx
-│  │  └─ main.tsx
-│  ├─ index.html
-│  └─ vite.config.ts
-├─ server
-│  ├─ src
-│  │  ├─ config
-│  │  ├─ controllers
-│  │  ├─ middleware
-│  │  ├─ models
-│  │  ├─ routes
-│  │  ├─ seed
-│  │  ├─ services
-│  │  ├─ types
-│  │  ├─ utils
-│  │  ├─ validators
-│  │  ├─ app.ts
-│  │  └─ index.ts
-│  └─ package.json
-├─ docker-compose.yml
-└─ README.md
-```
+[aliefe@gmail.com](mailto:aliefe@gmail.com)
 
-## API Overview
-
-- `GET /health`
-- `POST /api/sspr/request`
-- `GET /api/sspr/status/:resetRequestId`
-- `POST /api/sspr/otp/verify`
-- `POST /api/sspr/otp/resend`
-- `POST /api/sspr/reset/validate`
-- `POST /api/sspr/reset-password`
-- `GET /api/authenticator/pending`
-- `POST /api/authenticator/approve`
-- `POST /api/authenticator/deny`
-- `GET /api/audit-logs`
-
-## Test Kullanıcısı
-
-aliefe@gmail.com
+---
 
 [TR]
 
@@ -176,166 +120,66 @@ IAM Esinli Self-Service Password Reset (SSPR) Portalı
 
 ## Açıklama
 
-Bu proje, IAM yaklaşımlarından ilham alan, portföy kalitesinde bir self-service şifre sıfırlama portalıdır. React/Vite arayüzü, Node.js/Express API’si ve MongoDB kalıcılığı ile güvenli sıfırlama akışlarını, MFA benzeri doğrulamayı ve denetlenebilir olay kayıtlarını gösterir.
+Bu proje, IAM yaklaşımlarından ilham alan, portföy kalitesinde bir self-service şifre sıfırlama portalıdır. React/Vite arayüzü, Node.js/Express API’si ve MongoDB ile güvenli akışları gösterir.
 
 ## Özellikler
 
-- E-posta ile giriş başlatma ve kullanıcı gizliliğini koruyan yanıtlar
-- Push onay simülasyonu ve otomatik e-posta OTP yedek akışı
-- Kısa ömürlü JWT reset token doğrulaması
-- Güvenlik açısından kritik olaylar için audit log
-- Modüler TypeScript backend ve bileşen bazlı React UI
+- E-posta ile güvenli giriş başlatma
+- Push onay simülasyonu ve OTP fallback
+- Süreli OTP doğrulama
+- JWT tabanlı kısa ömürlü tokenlar
+- 3 dakikalık timeout
+- Audit log sistemi
+- Güvenli parola hashleme
+- Modüler yapı
+- Çoklu dil desteği (EN/TR)
 
 ## Mimari Şema
 
-![Architecture Diagram](./docs/diagram.png)
+![Architecture](./docs/diagram.png)
 
 ## Ekran Görüntüleri
 
-<p align="center">
-  <img src="./docs/ss1.png" width="400"/>
-  <img src="./docs/ss2.png" width="400"/>
-</p>
-
-<p align="center">
-  <img src="./docs/ss3.png" width="400"/>
-  <img src="./docs/ss4.png" width="400"/>
-</p>
+![SS1](./docs/ss1.png)
+![SS2](./docs/ss2.png)
+![SS3](./docs/ss3.png)
+![SS4](./docs/ss4.png)
 
 ## Kullanılan Teknolojiler
 
-- React 18 + Vite + TypeScript
-- Node.js + Express + TypeScript
+- React + Vite + TypeScript
+- Node.js + Express
 - MongoDB + Mongoose
-- JWT (jsonwebtoken)
+- JWT
 - bcrypt
+- crypto
 - Nodemailer
-- Docker Compose (lokal demo)
-
-## Kurulum
-
-```bash
-cd server
-npm install
-
-cd ../client
-npm install
-```
-
-## Projeyi Çalıştırma
-
-Backend:
-
-```bash
-cd server
-npm run dev
-```
-
-Frontend:
-
-```bash
-cd client
-npm run dev
-```
-
-Docker (tam yığın):
-
-```bash
-docker compose up --build
-```
-
-Varsayılan portlar:
-
-- Frontend: http://localhost:5173
-- Backend: http://localhost:4000
-- MongoDB: localhost:27017
-
-## Ortam Değişkenleri
-
-`server/.env` dosyası oluşturun:
-
-```bash
-NODE_ENV=development
-PORT=4000
-MONGODB_URI=mongodb://localhost:27017/sspr
-JWT_RESET_SECRET=change-me
-JWT_RESET_EXPIRES_IN=10m
-FLOW_TIMEOUT_SECONDS=180
-SMTP_HOST=
-SMTP_PORT=587
-SMTP_USER=
-SMTP_PASS=
-SMTP_FROM=no-reply@example.com
-```
+- Docker Compose
+- i18n
 
 ## Kimlik Doğrulama Akışı
 
-- E-posta girişi: kullanıcı e-posta adresi ile reset akışını başlatır.
-- OTP doğrulama: push onayı zaman aşımına uğrarsa sistem e-posta OTP gönderir ve doğrulama ister.
-- Zaman aşımı (3 dakika): doğrulama akışı varsayılan olarak 180 saniyede biter (`FLOW_TIMEOUT_SECONDS` ile değiştirilebilir).
-- Şifre sıfırlama/değiştirme: OTP doğrulandıktan sonra kullanıcı yeni şifre belirler; sunucu doğrular ve hash’leyerek kaydeder.
-- Token güvenliği: reset token’ları sunucuda üretilir ve frontend arayüzünde gösterilmemelidir.
+- Kullanıcı e-posta ile başlatır
+- Push simülasyonu yapılır
+- Timeout sonrası OTP gönderilir
+- OTP doğrulanır
+- 3 dakika içinde tamamlanmazsa iptal edilir
+- Şifre değiştirme yapılır
 
 ## Güvenlik Notları
 
-- Parolalar bcrypt ile hash’lenir.
-- OTP’ler hash’lenir ve 5 dakika içinde geçerliliğini yitirir; yeniden gönderim rate-limitlidir.
-- Reset token’ları kısa ömürlü JWT’lerdir.
-- Audit log kayıtları güvenlik açısından kritik tüm olayları izler.
-
-## Klasör Yapısı
-
-```text
-.
-├─ client
-│  ├─ src
-│  │  ├─ components
-│  │  ├─ hooks
-│  │  ├─ i18n
-│  │  ├─ pages
-│  │  ├─ services
-│  │  ├─ styles
-│  │  ├─ types
-│  │  ├─ utils
-│  │  ├─ App.tsx
-│  │  └─ main.tsx
-│  ├─ index.html
-│  └─ vite.config.ts
-├─ server
-│  ├─ src
-│  │  ├─ config
-│  │  ├─ controllers
-│  │  ├─ middleware
-│  │  ├─ models
-│  │  ├─ routes
-│  │  ├─ seed
-│  │  ├─ services
-│  │  ├─ types
-│  │  ├─ utils
-│  │  ├─ validators
-│  │  ├─ app.ts
-│  │  └─ index.ts
-│  └─ package.json
-├─ docker-compose.yml
-└─ README.md
-```
-
-## API Özeti
-
-- `GET /health`
-- `POST /api/sspr/request`
-- `GET /api/sspr/status/:resetRequestId`
-- `POST /api/sspr/otp/verify`
-- `POST /api/sspr/otp/resend`
-- `POST /api/sspr/reset/validate`
-- `POST /api/sspr/reset-password`
-- `GET /api/authenticator/pending`
-- `POST /api/authenticator/approve`
-- `POST /api/authenticator/deny`
-- `GET /api/audit-logs`
+- Şifreler bcrypt ile hashlenir
+- OTP ve tokenlar güvenlidir
+- Token frontend’de gösterilmez
+- Timeout ile güvenlik sağlanır
+- Audit log ile izlenebilirlik sağlanır
 
 ## Test Kullanıcısı
 
-aliefe@gmail.com
+[aliefe@gmail.com](mailto:aliefe@gmail.com)
 
-Developed by: Aliefe
+---
+
+## Developed by
+
+Ali Efe
