@@ -26,10 +26,15 @@ A portfolio-grade self-service password reset portal inspired by IAM practices. 
 
 ## Screenshots
 
-![Screenshot 1](./docs/ss1.png)
-![Screenshot 2](./docs/ss2.png)
-![Screenshot 3](./docs/ss3.png)
-![Screenshot 4](./docs/ss4.png)
+<p align="center">
+  <img src="./docs/ss1.png" width="400"/>
+  <img src="./docs/ss2.png" width="400"/>
+</p>
+
+<p align="center">
+  <img src="./docs/ss3.png" width="400"/>
+  <img src="./docs/ss4.png" width="400"/>
+</p>
 
 ## Technologies Used
 
@@ -140,11 +145,15 @@ Bu proje, IAM yaklaşımlarından ilham alan, portföy kalitesinde bir self-serv
 
 ## Ekran Görüntüleri
 
-![SS1](./docs/ss1.png)
-![SS2](./docs/ss2.png)
-![SS3](./docs/ss3.png)
-![SS4](./docs/ss4.png)
+<p align="center">
+  <img src="./docs/ss1.png" width="400"/>
+  <img src="./docs/ss2.png" width="400"/>
+</p>
 
+<p align="center">
+  <img src="./docs/ss3.png" width="400"/>
+  <img src="./docs/ss4.png" width="400"/>
+</p>
 ## Kullanılan Teknolojiler
 
 - React + Vite + TypeScript
