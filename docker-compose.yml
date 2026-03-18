@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:7
+    container_name: sspr-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  server:
+    build:
+      context: ./server
+    container_name: sspr-server
+    environment:
+      NODE_ENV: development
+      PORT: 4000
+      MONGODB_URI: mongodb://mongo:27017/sspr_demo
+      JWT_RESET_SECRET: dev-reset-secret
+      JWT_RESET_EXPIRES_IN: 10m
+      FLOW_TIMEOUT_SECONDS: 180
+      SMTP_HOST: ""
+      SMTP_PORT: 587
+      SMTP_USER: ""
+      SMTP_PASS: ""
+      SMTP_FROM: no-reply@example.com
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+
+  client:
+    build:
+      context: ./client
+    container_name: sspr-client
+    environment:
+      VITE_API_PROXY_TARGET: http://server:4000
+      VITE_API_BASE_URL: ""
+    ports:
+      - "5173:5173"
+    depends_on:
+      - server
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+
+volumes:
+  mongo_data:
