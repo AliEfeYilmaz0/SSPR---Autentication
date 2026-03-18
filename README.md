@@ -22,7 +22,15 @@ A portfolio-grade self-service password reset portal inspired by IAM practices. 
 
 ## Screenshots
 
-![Screenshot](./docs/screen.png)
+<p align="center">
+  <img src="./docs/ss1.png" width="400"/>
+  <img src="./docs/ss2.png" width="400"/>
+</p>
+
+<p align="center">
+  <img src="./docs/ss3.png" width="400"/>
+  <img src="./docs/ss4.png" width="400"/>
+</p>
 
 ## Technologies Used
 
@@ -184,7 +192,15 @@ Bu proje, IAM yaklaşımlarından ilham alan, portföy kalitesinde bir self-serv
 
 ## Ekran Görüntüleri
 
-![Screenshot](./docs/screen.png)
+<p align="center">
+  <img src="./docs/ss1.png" width="400"/>
+  <img src="./docs/ss2.png" width="400"/>
+</p>
+
+<p align="center">
+  <img src="./docs/ss3.png" width="400"/>
+  <img src="./docs/ss4.png" width="400"/>
+</p>
 
 ## Kullanılan Teknolojiler
 
